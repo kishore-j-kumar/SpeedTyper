@@ -1,16 +1,13 @@
 import java.awt.*;
 import javax.swing.*;
 
-public class Main 
-{
+public class Main {
 	static Dimension ScreenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	public static final int EXTEND_FRAME = 6;
 	public static final int CLOSE_OP = 3;
-  
 	static JFrame frame;
 	
-	public static void main(String[] args) 
-	{
+	public static void main(String[] args) {
 		frame = new JFrame();
 	    Screen ScreenObject = new Screen();
 	    frame.add(ScreenObject);
@@ -21,8 +18,7 @@ public class Main
 	    frame.setDefaultCloseOperation(CLOSE_OP);
 	}
 	
-	public static void reset()
-	{
+	public static void reset() {
 		frame = new JFrame();
 		Screen ScreenObject = new Screen();
 	    frame.add(ScreenObject);
