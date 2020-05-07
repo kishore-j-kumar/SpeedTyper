@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import javax.swing.*;
 import java.awt.*;
 
+/** The Screen class is the "brain" of the game. It computes
+ * and displays the output of the game.
+ * @author: Kishore Kumar
+ */
 public class Screen extends JPanel implements KeyListener, MouseListener {
 	private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	private boolean started = false;
@@ -101,6 +105,9 @@ public class Screen extends JPanel implements KeyListener, MouseListener {
 	private long timeAtStart;
 	private String currString = "";
 
+	/**
+	 * Screen constructor.
+	 */
 	public Screen() {
 		words = new Word[MAX_WORDS_ON_SCREEN];
 		for (int i = 0; i < this.words.length; i++)
@@ -114,6 +121,9 @@ public class Screen extends JPanel implements KeyListener, MouseListener {
 		addMouseListener(this);
 	}
 
+	/**
+	 * Instantiates the list of words based on the language chosen.
+	 */
 	private void instantiateWordList() {
 		this.wordList = new ArrayList<String>();
 		try {
@@ -131,6 +141,9 @@ public class Screen extends JPanel implements KeyListener, MouseListener {
 		}
 	}
 
+	/**
+	 * Updates the title screen with the necessary content upon launching the program.
+	 */
 	private void setTitleScreen() {
 		this.beginLabel = new JLabel("<html><center><bold>[SpeedTyper]</bold></center><center>Press SPACE to begin</center><center>Choose difficulty:" +
 		" 1(Easy)-3(Hard)</center><center>Choose Language: 4-EN, 5-FR, 6-IT</center><center>Hit ESC to exit</center><html>", SwingConstants.CENTER);
@@ -141,6 +154,9 @@ public class Screen extends JPanel implements KeyListener, MouseListener {
 		setFocusable(true);
 	}
 
+	/**
+	 * Sets the game labels (speed, missed words, etc.) once the game has started.
+	 */
 	private void setGameLabels() {
 		this.statsOne = new JLabel("Score: " + this.score + " || Missed: " + this.missed, STANDARD_SPACING);
 		this.statsOne.setForeground(Color.black);
@@ -168,6 +184,10 @@ public class Screen extends JPanel implements KeyListener, MouseListener {
 		add(this.currentWord);
 	}
 
+	/**
+	 * Controls what is being displayed.
+	 * @param g: Graphics component
+	 */
 	public void paintComponent(Graphics g) {
 		if (!this.started) {
 			updateTitle(g);
@@ -183,6 +203,10 @@ public class Screen extends JPanel implements KeyListener, MouseListener {
 		}
 	}
 
+	/**
+	 * Updates the title screen.
+	 * @param g: Graphics component
+	 */
 	private void updateTitle(Graphics g) {
 		this.beginLabel.setText("<html><center><bold>[SpeedTyper]</bold></center><center>Press SPACE to begin</center><center>Choose difficulty:" +
 		" 1(Easy)-3(Hard)</center><center>Choose Language: 4-EN, 5-FR, 6-IT</center><center>Hit ESC to exit</center><html>");
@@ -211,6 +235,10 @@ public class Screen extends JPanel implements KeyListener, MouseListener {
 		}
 	}
 
+	/**
+	 * Updates the ending screen
+	 * @param g: Graphics component
+	 */
 	private void updateEnd(Graphics g) {
 		int total = 0;
 		for (int i = 0; i < this.avg.size(); i++) {
@@ -227,6 +255,9 @@ public class Screen extends JPanel implements KeyListener, MouseListener {
 				+ totalAvg + "</center><center>ESC to exit, Home to replay</center><center>Hit 9 on title for DEMON difficulty!</center></html>");
 	}
 
+	/**
+	 * Central method for managing what is happening in the game.
+	 */
 	private void gameLogic() {
 		wordLogic();
 		if (this.missed >= POSSIBLE_MISSES) {
@@ -236,6 +267,12 @@ public class Screen extends JPanel implements KeyListener, MouseListener {
 		generateWords();
 	}
 
+	/**
+	 * Makes sure words are handled properly:
+	 * 1. Aren't colliding
+	 * 2. Haven't been typed
+	 * 3. Miss a word if it goes of the screen
+	 */
 	private void wordLogic() {
 		for (int i = 0; i < this.words.length; i++) {
 			if (this.words[i] != null) {
@@ -259,6 +296,9 @@ public class Screen extends JPanel implements KeyListener, MouseListener {
 		}
 	}
 
+	/**
+	 * Manages the challenge level of the game.
+	 */
 	private void challengeLogic() {
 		if (this.score >= SS_RANK) {
 			this.challengeLevel = this.initLevel + SS_ADD;
@@ -292,6 +332,9 @@ public class Screen extends JPanel implements KeyListener, MouseListener {
 		}
 	}
 
+	/**
+	 * Buffer time.
+	 */
 	private void buffer() {
 		try {
 			Thread.sleep(BUFFER_TIME);
@@ -302,6 +345,9 @@ public class Screen extends JPanel implements KeyListener, MouseListener {
 		repaint();
 	}
 
+	/**
+	 * Generate words to place on screen.
+	 */
 	private void generateWords() {
 		this.cnt++;
 		if(makeWordsOnBuffer()) {
@@ -311,6 +357,10 @@ public class Screen extends JPanel implements KeyListener, MouseListener {
 		fillArrayWhenDepleted();
 	}
 
+	/**
+	 * Put words in word array.
+	 * @return true if word can be created, false o.w.
+	 */
 	private boolean makeWordsOnBuffer() {
 		if (this.cnt % WORD_BUFFER_COUNT == 0) {
 			for (int i = 0; i < this.words.length; i++) {
@@ -323,6 +373,9 @@ public class Screen extends JPanel implements KeyListener, MouseListener {
 		return false;
 	}
 
+	/**
+	 *
+	 */
 	private void checkWordIntersection() {
 		for (int i = 0; i < this.words.length; i++) {
 			if (this.words[i] != null) {
@@ -336,6 +389,9 @@ public class Screen extends JPanel implements KeyListener, MouseListener {
 		}
 	}
 
+	/**
+	 * Replaced "completed" or missed words with new ones.
+	 */
 	private void fillArrayWhenDepleted() {
 		int nullCnt = 0;
 		for (int i = 0; i < this.words.length; i++) {
@@ -352,6 +408,10 @@ public class Screen extends JPanel implements KeyListener, MouseListener {
 		}
 	}
 
+	/**
+	 * Manages key presses
+	 * @param e KeyEvent "key press"
+	 */
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == ESC_KEY) {
 			System.exit(0);
@@ -385,6 +445,10 @@ public class Screen extends JPanel implements KeyListener, MouseListener {
 		}
 	}
 
+	/**
+	 * Ensures difficulty setting is where it needs to be.
+	 * @param e KeyEvent
+	 */
 	private void checkSettings(KeyEvent e) {
 		if (e.getKeyCode() == EASY_KEYCODE) {
 			challengeLevel = initLevel = EASY_DIFFICULTY;
